@@ -31,7 +31,25 @@ cd ..
 docker compose up --build
 ```
 
-**4. მონაცემთა ბაზის seed:**
+**4. პრისმას დაბილდვა **
+```bash
+cd be
+npx prisma generate //ლოკალურისთვის რომ კოდმა არ გვეჩხუბოს
+```
+
+Docker Desktop-ით: გახსენით API კონტეინერი → Exec ჩანართი → გაუშვით:
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+ან command line-იდან:
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+**5. მონაცემთა ბაზის seed:**
 
 Docker Desktop-ით: გახსენით API კონტეინერი → Exec ჩანართი → გაუშვით:
 ```bash
@@ -43,9 +61,10 @@ npx prisma db seed
 docker exec -it <api_container_name> npx prisma db seed
 ```
 
-**5. გახსენით ბრაუზერში:**
+**6. გახსენით ბრაუზერში:**
 - Frontend: http://localhost:4200
 - Backend: http://localhost:3000
+
 
 ---
 
@@ -69,7 +88,9 @@ docker exec -it <api_container_name> npx prisma db seed
 
 ## 🏗️ არქიტექტურა
 
-*(დიაგრამები და არქიტექტურული გადაწყვეტილებები მალე დაემატება)*
+*ეს დიაგრამა ასახავს თუ როგორ მუშაობს პროექტი გთხოვთ დააკვირდეთ კავშირებს ზოგი კავშირი ორმხრივია ზოგი ცალმხრივი რაც მნიშვნელოვანია*
+
+![Diagram of the project.](./docs/optio%20api%20diagram.svg)
 
 ---
 
