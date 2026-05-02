@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  createdAt     DateTime @default(now())
+
+  transactions        Transaction[]
+  segmentMemberships  SegmentMembership[]
+
+  habits Json?
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Float
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Segment {
+  id          Int         @id @default(autoincrement())
+  name        String
+  type        SegmentType 
+  rules       Json?       
+  createdAt   DateTime    @default(now())
+
+  memberships SegmentMembership[]
+  deltaLogs   DeltaLog[]
+}
+
+model SegmentMembership {
+  segmentId Int
+  userId    Int
+  addedAt   DateTime @default(now())
+
+  segment   Segment  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([segmentId, userId])
+}
+
+model DeltaLog {
+  id          Int      @id @default(autoincrement())
+  segmentId   Int      
+  addedIds    Int[]    
+  removedIds  Int[]    
+  simulatedAt DateTime 
+  createdAt   DateTime @default(now())
+
+  segment     Segment  @relation(fields: [segmentId], references: [id])
+}
+
+enum SegmentType {
+  DYNAMIC
+  STATIC
+}
