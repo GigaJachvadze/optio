@@ -1,26 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 
-interface UserData {
+export interface UserData {
   id: number;
   transactions: { amount: number; createdAt: Date }[];
 }
 
 @Injectable()
 export class SegmentEvaluatorService {
-    constructor(private prisma: PrismaService) { }
-
-    async loadUsers(simDate: Date): Promise<UserData[]> {
-        return this.prisma.user.findMany({
-            select: {
-                id: true,
-                transactions: {
-                    where: { createdAt: { lte: simDate } },
-                    select: { amount: true, createdAt: true }
-                }
-            }
-        }) as Promise<UserData[]>;
-    }
+    constructor() { }
 
     getUsersMatchingSegment(rules: any, users: UserData[], memberships: Map<number, Set<number>>, simDate: Date): number[] {
         if (!rules?.conditions?.length) return [];
@@ -55,9 +42,6 @@ export class SegmentEvaluatorService {
             return this.compare(daysSinceLastTransaction, condition.operator, condition.value);
         }
 
-        // filter transactions by periodDays window
-        // calculate actual value based on condition.field
-        // compare using condition.operator
         return false;
     }
 

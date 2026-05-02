@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HabbitDTO } from './habbit.dto';
-import { SegmentEvaluatorService } from './segment-evaluator.service';
+import { SegmentEvaluatorService, UserData } from './segment-evaluator.service';
 import { DeltaService } from './delta.service';
 import { EventBusService } from './event-bus.service';
 
@@ -74,7 +74,11 @@ export class SimulationService {
         try {
             const from = new Date(this.state.currentDate);
             this.state.currentDate = new Date(this.state.currentDate.getTime() + this.state.daysPerTick * 1000 * 60 * 60 * 24);
-            await this.registerNewUsers();
+
+            for (let d = 0; d < this.state.daysPerTick; d++) {
+                await this.registerNewUsers();
+            }
+
             await this.generateTransactions(from, this.state.currentDate);
 
             await this.evaluateSegments(this.state.currentDate);
@@ -95,7 +99,7 @@ export class SimulationService {
 
         const sortedSegments = this.sortSegments(dynamicSegments);
 
-        const users = await this.segmentEvaluator.loadUsers(simDate);
+        const users = await this.loadUsers(simDate);
 
         const memberships = await this.prisma.segmentMembership.findMany({
             where: {
@@ -145,7 +149,6 @@ export class SimulationService {
 
         for (const user of users) {
             const habits = user.habits as any as HabbitDTO;
-
 
             for (let d = 0; d < days; d++) {
                 const date = new Date(from.getTime() + d * 1000 * 60 * 60 * 24);
@@ -213,5 +216,17 @@ export class SimulationService {
             s.rules?.conditions?.some((c: any) => c.type === 'segment')
         );
         return [...withoutSegmentDeps, ...withSegmentDeps];
+    }
+
+    async loadUsers(simDate: Date): Promise<UserData[]> {
+        return this.prisma.user.findMany({
+            select: {
+                id: true,
+                transactions: {
+                    where: { createdAt: { lte: simDate } },
+                    select: { amount: true, createdAt: true }
+                }
+            }
+        }) as Promise<UserData[]>;
     }
 }
