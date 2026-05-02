@@ -1,0 +1,68 @@
+<div class="flex flex-col gap-8">
+    <span class="text-4xl font-bold">Segments</span>
+    <div class="p-6 bg-primary-200 rounded-2xl flex flex-col gap-4">
+        <div class="grid-cols-6 grid">
+            <div>
+                <span class="text-lg font-bold">Name</span>
+            </div>
+            <div>
+                <span class="text-lg font-bold">Type</span>
+            </div>
+            <div>
+                <span class="text-lg font-bold">Rules Count</span>
+            </div>
+            <div>
+                <span class="text-lg font-bold">Members Count</span>
+            </div>
+            <div>
+                <span class="text-lg font-bold">Created At</span>
+            </div>
+            <div>
+                <span class="text-lg font-bold">Actions</span>
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            @for (segment of segments(); track $index) {
+                <div class="grid-cols-6 grid">
+                    <div>
+                        <span class="text-lg">{{ segment.name }}</span>
+                    </div>
+                    <div>
+                        @if (segment.type === 'DYNAMIC') {
+                            <span class="py-1 px-2 bg-tertiary-300 text-primary text-md">DYNAMIC</span>
+                        } @else {
+                            <span class="py-1 px-2 bg-neutral-400 text-primary text-md">STATIC</span>
+                        }
+                    </div>
+                    <div>
+                        @if (segment.rules) {
+                            <span class="text-lg">{{ segment.rules.conditions.length }}</span>
+                        } @else {
+                            <span class="text-lg">No Rules!</span>
+                        }
+                    </div>
+                    <div>
+                        <span class="text-lg">{{ segment._count.memberships }}</span>
+                    </div>
+                    <div>
+                        <span class="text-lg">{{ segment.createdAt | date }}</span>
+                    </div>
+                    <div class="flex gap-1">
+                        <button routerLink="./details/{{ segment.id }}" class="text-primary p-2 rounded w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-primary-400 hover:text-white transition">
+                            <span class="material-symbols-outlined text-base">eye_tracking</span>
+                        </button>
+                        <button routerLink="./edit/{{ segment.id }}" class="text-primary p-2 rounded w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-primary-400 hover:text-white transition">
+                            <span class="material-symbols-outlined text-base ">edit</span>
+                        </button>
+                        <button (click)="deleteSegment(segment.id)" class="text-red-400 p-2 rounded w-8 h-8 flex items-center justify-center cursor-pointer hover:bg-red-400 hover:text-white transition">
+                            <span class="material-symbols-outlined text-base ">delete</span>
+                        </button>
+                    </div>
+                </div>
+                @if ($index !== segments().length - 1) {
+                    <div class="h-px bg-black w-full opacity-50"></div>
+                }
+            }
+        </div>
+    </div>
+</div>
