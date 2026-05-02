@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: drift
+      POSTGRES_PASSWORD: drift
+      POSTGRES_DB: drift
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U drift"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./be
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://drift:drift@db:5432/drift
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./be:/app
+      - /app/node_modules
+
+  client:
+    build:
+      context: ./fe
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api
+    volumes:
+      - ./fe:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
