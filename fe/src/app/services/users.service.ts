@@ -13,6 +13,15 @@ export class UsersService {
     return this.http.get(API + 'users');
   }
 
+  getUsersPaginator(page?: number, pageSize?: number, search?: string): Observable<any> {
+    const params = {
+      page: page?? '',
+      pageSize: pageSize?? '',
+      search: search?? ''
+    }
+    return this.http.get(API + 'users/paginator', {params: params});
+  }
+
   getUserById(id: string): Observable<any> {
     return this.http.get(API + `users/${id}`);
   }

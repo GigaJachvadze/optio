@@ -20,6 +20,15 @@ export class UserController {
     return this.userService.getAll();
   }
 
+  @Get('paginator')
+  getAllPaginator(
+    @Query('page') page = '1',
+    @Query('pageSize') pageSize = '20',
+    @Query('search') search = ''
+  ) {
+    return this.userService.getPaginator(+page, +pageSize, search);
+  }
+
   @Get('search')
   searchUsers(@Query('q') q: string) {
     return this.userService.search(q);

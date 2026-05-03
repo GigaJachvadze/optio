@@ -54,8 +54,6 @@ export class SegmentService {
   }
 
   async create(dto: CreateSegmentDto) {
-
-    console.log('create payload:', JSON.stringify(dto));
     if (dto.type === 'STATIC' && (!dto.memberIds || dto.memberIds.length === 0)) {
       throw new BadRequestException('Static segments must have at least one member');
     }

@@ -81,7 +81,6 @@ export class EditSegment {
       next: (data) => {
         this.segment = data;
         this.loading.set(false);
-        console.log('Segment details:', data);
       }
     });
   }
@@ -233,13 +232,11 @@ export class EditSegment {
     }
     this.segmentService.updateSegment(this.segment.id, this.segment).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        console.log('Segment updated successfully', data);
-        // Optionally reset the form or navigate away
+        this.router.navigate(['/segments']);
       },
       error: (error) => {
         console.error('Error updating segment', error);
       }
     });
-    this.router.navigate(['/segments']);
   }
 }

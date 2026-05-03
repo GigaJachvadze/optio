@@ -118,7 +118,6 @@ export class SimulationService {
         for (let i = 0; i < sortedSegments.length; i++) {
             const segment = sortedSegments[i];
             const usersMatch = this.segmentEvaluator.getUsersMatchingSegment(segment.rules, users, membershipsMap, simDate);
-            console.log(`Segment ${segment.name}: ${usersMatch.length} matches`);
             membershipsMap.set(segment.id, new Set(usersMatch));
 
             const delta = await this.deltaService.computeDelta(segment.id, usersMatch);

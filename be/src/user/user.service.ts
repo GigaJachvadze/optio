@@ -16,6 +16,33 @@ export class UserService {
     });
   }
 
+  async getPaginator(page: number, pageSize: number, search: string) {
+    const WHERE = search ? {
+      OR: [
+        { name: { contains: search, mode: 'insensitive' as 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' as 'insensitive' } }
+      ]
+    } : {}
+
+    const [users, total] = await Promise.all([
+        this.prisma.user.findMany({
+          where: WHERE,
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          orderBy: { createdAt: 'desc' }
+        }),
+        this.prisma.user.count({ where: WHERE })
+    ]);
+
+    return {
+        data: users,
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize)
+    };
+  }
+
   search(q: string) {
     return this.prisma.user.findMany({
       where: {  name: { contains: q, mode: 'insensitive' } },

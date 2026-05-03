@@ -140,7 +140,6 @@ export class CreateSegment implements OnInit {
     this.searchQuery.set('');
     (this.segment.rules.conditions[index] as SegmentCondition).segmentId = segment.id;
     (this.segment.rules.conditions[index] as SegmentCondition).segmentName = segment.name;
-    console.log('Selected segment for condition:', this.segment);
   }
 
 
@@ -209,7 +208,6 @@ export class CreateSegment implements OnInit {
     }
     this.segmentService.createSegment(this.segment).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        console.log('Segment created successfully', data);
         this.router.navigate(['/segments']);
       },
       error: (error) => {

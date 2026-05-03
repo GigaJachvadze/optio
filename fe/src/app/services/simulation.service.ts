@@ -18,12 +18,10 @@ export class SimulationService {
     
     this.ws = new Observable(observer => {
       socket.on('simulation-event', (event) => {
-        // console.log(event);
         observer.next(event);
       });
 
       socket.on('connect_error', (err) => {
-        // console.log(err);
         observer.error(err);
       });
 

@@ -40,7 +40,8 @@ export class Dashboard implements OnInit {
     this.getSegments();
 
     this.speedSubject.pipe(
-      debounceTime(100)
+      debounceTime(100),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe((value) => {
       this.simulationServce.updateSpeed(value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
@@ -53,7 +54,6 @@ export class Dashboard implements OnInit {
   getSegments(): void {
     this.segmentService.getForDelta().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (segments) => {
-        console.log(segments);
         this.segments = segments;
       },
       error: (err) => {
@@ -103,8 +103,6 @@ export class Dashboard implements OnInit {
           this.state.currentDate = new Date(event.data.simDate);
           this.cdr.detectChanges();
         }
-        
-        console.log(event);
       },
       error: (err) => {
         console.error(err);

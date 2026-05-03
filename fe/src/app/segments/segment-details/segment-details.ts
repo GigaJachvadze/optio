@@ -32,7 +32,6 @@ export class SegmentDetails {
       next: (data) => {
         this.segment = data;
         this.loading.set(false);
-        console.log('Segment details:', data);
       }
     });
   }

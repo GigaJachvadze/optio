@@ -24,7 +24,6 @@ export class Segments implements OnInit {
     this.segmentService.getAllSegments().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.segments.set(data);
-        console.log(this.segments());
       },
       error: (err) => {
         console.error('Error fetching segments:', err);
